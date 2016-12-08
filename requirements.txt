@@ -1,0 +1,10 @@
+# used for testing
+flake8
+coverage
+# test requirements from demoproject/
+pytz
+django-markup-deprecated
+docutils
+Pygments
+# used for releases
+wheel
