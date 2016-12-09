@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import url
 from . import views, chartdemo, pivotdemo, chartraw
 
-
 sort_order = {
     'Report': 0,
     'Charts': 1,
@@ -27,14 +26,14 @@ sidebar_items = []
 
 urlpatterns = [
     url(r'^$', views.homepage, name='homepage'),
-    url(r'^demo/$', views.demohome,
+    url(r'^demo/$', views.list,name='list'),
+    url(r'^demo/$', views.model_details,
         {
-            'title': 'File Upload',
+            'title': 'Upload File',
             'sidebar_section': 'Report',
         },
         name='file_upload',
         ),
-
     url(r'^demo/model-details/$', views.model_details,
         {
             'title': 'Query Report',
