@@ -18,7 +18,7 @@ from . import views, chartdemo, pivotdemo, chartraw
 
 
 sort_order = {
-    'Welcome': 0,
+    'Report': 0,
     'Charts': 1,
     'Pivot Charts': 2,
     'Charts w/ RawQuerySet': 3,
@@ -29,18 +29,18 @@ urlpatterns = [
     url(r'^$', views.homepage, name='homepage'),
     url(r'^demo/$', views.demohome,
         {
-            'title': 'Hello there!',
-            'sidebar_section': 'Welcome',
+            'title': 'File Upload',
+            'sidebar_section': 'Report',
         },
-        name='demo_home',
+        name='file_upload',
         ),
 
     url(r'^demo/model-details/$', views.model_details,
         {
-            'title': 'Model Details',
-            'sidebar_section': 'Welcome',
+            'title': 'Query Report',
+            'sidebar_section': 'Report',
         },
-        name='model_details',
+        name='query_report',
         ),
 
     # chart examples
