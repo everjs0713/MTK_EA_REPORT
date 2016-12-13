@@ -18,6 +18,17 @@
             <p>No documents.</p>
         {% endif %}
 
+        <!-- List of uploaded documents -->
+        {% if documents %}
+            <ul>
+                {% for document in documents %}
+                    <li><a href="{{ document.upload_to.url }}">{{ document.upload_to.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No documents.</p>
+        {% endif %}
+
         <!-- Upload form. Note enctype attribute! -->
         <form action="{% url "list" %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}

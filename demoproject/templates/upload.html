@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block welcome %}
+
+
+					   <div class="source">
+							{% load markup %}
+							<div class="section">
+								<h1> File Upload</h1>
+								
+								{{ doc|restructuredtext }}
+							</div>
+                                <!-- Upload form. Note enctype attribute! -->
+                                <form action="{% url "upload" %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <p>{{ form.non_field_errors }}</p>
+                        
+                                    <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+                        
+                                    <p>
+                                        {{ form.docfile.errors }}
+                                        {{ form.title }}
+                                        {{ form.file }}
+                                    </p>
+                        
+                                    <p><input type="submit" value="Upload"/></p>
+                                </form>
+							
+
+						</div>
+
+{% endblock %}

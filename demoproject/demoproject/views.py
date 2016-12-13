@@ -8,10 +8,12 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views.generic.edit import FormView
 
 from .models import Document
 from .forms import DocumentForm
-
+from .forms import UploadFileForm
+from .models import modelwithfilefield
 def homepage(_):
     ds = DataPool(
         series=[{
@@ -88,15 +90,9 @@ def demohome(_, title, code, doc, sidebar_items):
 
 @add_source_code_and_doc
 def model_details(_, title, code, doc, sidebar_items):
-    """
-    All the charts in this section are based on the following Models.
-    Model data is available as migrations, found inside charit git
-    repository.
-    """
-    fname = os.path.join(os.path.split(os.path.abspath(__file__))[0],
-                         'models.py')
-    with open(fname) as f:
-        code = ''.join(f.readlines())
+
+
+    code='hello'
     return render_to_response('model_details.html',
                               {'code': code,
                                'title': title,
@@ -125,3 +121,19 @@ def list(request):
         'list.html',
         {'documents': documents, 'form': form}
     )
+
+def upload_file(request):
+    if request.method == 'POST':
+        files = request.FILES.getlist('file')        
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            for f in files:
+                newdoc = modelwithfilefield(upload_to=f)
+                newdoc.save()
+            return HttpResponseRedirect('/demo/model-details/')    
+    else:
+        form = UploadFileForm()   
+    # Load documents for the list page
+    documents = modelwithfilefield.objects.all()        
+    return render(request, 'upload.html', {'documents': documents, 'form': form})
+    

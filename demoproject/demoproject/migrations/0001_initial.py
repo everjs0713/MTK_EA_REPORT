@@ -169,4 +169,11 @@ class Migration(migrations.Migration):
                 ('docfile', models.FileField(upload_to=b'documents/%Y/%m/%d')),
             ],
         ),        
+        migrations.CreateModel(
+            name='modelwithfilefield',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('upload_to', models.FileField(upload_to=b'upload/%Y/%m/%d')),
+            ],
+        ), 
     ]
