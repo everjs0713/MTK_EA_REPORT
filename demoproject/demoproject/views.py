@@ -98,40 +98,26 @@ def model_details(_, title, code, doc, sidebar_items):
                                'title': title,
                                'doc': doc,
                                'sidebar_items': sidebar_items})
-
 @add_source_code_and_doc
-def file_list(_, title, code, doc, sidebar_items):
-
-
-    code='hello'
-    return render_to_response('file_list.html',
-                              {'code': code,
+def report_details(request, title, code, doc, sidebar_items):
+    doc = request.POST.getlist('ticket_id')
+    return render_to_response('report_details.html', {'code': code,
                                'title': title,
                                'doc': doc,
                                'sidebar_items': sidebar_items})
 
-def list(request):
-    # Handle file upload
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            newdoc = Document(docfile=request.FILES['docfile'])
-            newdoc.save()
+@add_source_code_and_doc
+def file_list(_, title, code, doc, sidebar_items):
 
-            # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('list'))
-    else:
-        form = DocumentForm()  # A empty, unbound form
+    f_list = os.listdir(os.getcwd()+'\\upload')
+    doc='Please select the trade record Files and click "Show Report" Button'
+    return render_to_response('file_list.html',
+                              {'code': code,
+                               'title': title,
+                               'f_list': f_list,                               
+                               'doc': doc,
+                               'sidebar_items': sidebar_items})
 
-    # Load documents for the list page
-    documents = Document.objects.all()
-
-    # Render list page with the documents and the form
-    return render(
-        request,
-        'list.html',
-        {'documents': documents, 'form': form}
-    )
 
 def upload_file(request):
     if request.method == 'POST':
@@ -148,3 +134,4 @@ def upload_file(request):
     #documents = modelwithfilefield.objects.all()        
     return render(request, 'upload.html', { 'form': form})
     
+

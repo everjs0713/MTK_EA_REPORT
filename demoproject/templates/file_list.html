@@ -1,16 +1,28 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block manage_head %}
+{%block chart_loader_header %}
 <script type='text/javascript' language='javascript'>
 $(document).ready(function() {
-    $("#ShowReportBT").click(function() {
-        $("#ShowReport").hide();
+
+    $("#select_all").click(function() {
+        $(".ticket_multi_select").attr('checked', true);
         return false;
     });
-
+    $("#select_none").click(function() {
+        $(".ticket_multi_select").attr('checked', false);
+        return false;
+    });
+    $("#select_inverse").click(function() {
+        $(".ticket_multi_select").each(function() {
+            $(this).attr('checked', !$(this).attr('checked'));
+        });
+        return false;
+    });
+});
 </script>
 {% endblock %}
 {% block welcome %}
+
 					   <div class="source">
 							{% load markup %}
 							<div class="section">
@@ -18,47 +30,46 @@ $(document).ready(function() {
 								{% load markup %}
 								{{ doc|restructuredtext }}
 							</div>
-							
-                                    <!-- /.table-responsive -->
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>{% trans "Number" %}</th>
-                                                    <th>{% trans "Name" %}</th>
-                                                    <th>{% trans "Time" %}</th>
-                                                    <th>{% trans "Reserve" %}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for queue in file_lists %}
-                                                <tr>{% url 'helpdesk:list' as hdlist %}
-                                                    <td><input type='checkbox' name='file_id' value='{{ queue.id }}'  /></td>
-                                                    <td>{% if queue.open %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=1&status=2'>{% endif %}{{ queue.open }}{% if queue.open %}</a>{% endif %}</td>
-                                                    <td>{% if queue.resolved %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=3'>{% endif %}{{ queue.resolved }}{% if queue.resolved %}</a>{% endif %}</td>
-                                                    <td>{% if queue.closed %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=4'>{% endif %}{{ queue.closed }}{% if queue.closed %}</a>{% endif %}</td>
-                                                </tr>
-                                                {% empty %}
-                                                <tr><td colspan='6'>{% trans "There are no unassigned tickets." %}</td></tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- /.table-responsive -->
-
-
-
-                                        <div class="panel-body">
-                                            <form method='get' action='.'>
-                                                <input class="btn btn-primary" type='submit' value='{% trans "Show Report" %}'>
-                                            </form>
+                                    <div class="panel-body">
+                                            <form method='post' action='{% url 'query_report'  %}' id="show_report">{% csrf_token %}							
+                                            <!-- /.table-responsive -->
+                                                <div class="table-responsive">
+                                                <table class="table table-striped table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>{% trans "Select" %}</th>
+                                                            <th>{% trans "Name" %}</th>
+                                                            <th>{% trans "Time" %}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for queue in f_list %}
+                                                        <tr>{% url 'helpdesk:list' as hdlist %}
+                                                            <td><input type='checkbox' name='file_id' value='{{ queue }}' class='ticket_multi_select' /></td>
+                                                            <td>{{ queue }}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr><td colspan='6'>{% trans "There are no unassigned tickets." %}</td></tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            <!-- /.table-responsive -->
+                                            <p><label>{% trans "Select:" %} </label>
+                                                <a href='#select_all' id='select_all'><button class="btn btn-primary btn-sm"><i class="fa fa-check-circle"></i>&nbsp;{% trans "All" %}</button></a>
+                                                <a href='#select_none' id='select_none'><button class="btn btn-primary btn-sm"><i class="fa fa-times-circle"></i>&nbsp;{% trans "None" %}</button></a>
+                                            </p>
+                                          <input class="btn btn-primary" type='submit' value='{% trans "Show Report" %}'>
+                                           {% csrf_token %}</form>
                                         </div>
+
                                         <p><label for='id_mass_action'>{% trans "If you query new report ,please delete all files and upload new files" %}</label>
 
                                         <div class="panel-body">
-                                            <form method='get' action='.'>
+                                            <form method='post' action='/record/' id="delete_all">
                                                 <input class="btn btn-primary" type='submit' value='{% trans "Delete All Files" %}'>
-                                            </form>
+                                              {% csrf_token %}</form>
                                         </div>
 						</div>
 {% endblock %}

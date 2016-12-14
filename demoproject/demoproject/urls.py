@@ -42,14 +42,12 @@ urlpatterns = [
         },
         name='file_manage',
         ),
-
-    url(r'^demo/model-details/$', views.model_details,
+    url(r'^report-details/$', views.report_details, 
         {
-            'title': 'Query Report',
+            'title': 'Report Detail',
             'sidebar_section': 'Report',
-        },
-        name='query_report',
-        ),        
+        },  name='query_report'), 
+        
 ]
 
 # build sidebar_items first
