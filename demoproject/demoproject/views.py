@@ -99,6 +99,17 @@ def model_details(_, title, code, doc, sidebar_items):
                                'doc': doc,
                                'sidebar_items': sidebar_items})
 
+@add_source_code_and_doc
+def file_list(_, title, code, doc, sidebar_items):
+
+
+    code='hello'
+    return render_to_response('file_list.html',
+                              {'code': code,
+                               'title': title,
+                               'doc': doc,
+                               'sidebar_items': sidebar_items})
+
 def list(request):
     # Handle file upload
     if request.method == 'POST':
@@ -130,10 +141,10 @@ def upload_file(request):
             for f in files:
                 newdoc = modelwithfilefield(upload_to=f)
                 newdoc.save()
-            return HttpResponseRedirect('/demo/model-details/')    
+            return HttpResponseRedirect('/record')    
     else:
         form = UploadFileForm()   
     # Load documents for the list page
-    documents = modelwithfilefield.objects.all()        
-    return render(request, 'upload.html', {'documents': documents, 'form': form})
+    #documents = modelwithfilefield.objects.all()        
+    return render(request, 'upload.html', { 'form': form})
     

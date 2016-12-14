@@ -27,7 +27,7 @@ sidebar_items = []
 urlpatterns = [
     url(r'^$', views.homepage, name='homepage'),
     url(r'^upload/$', views.upload_file,name='upload'),
-    url(r'^upload/$', views.model_details,
+    url(r'^upload/$', views.upload_file,
         {
             'title': 'Upload File',
             'sidebar_section': 'Report',
@@ -35,7 +35,7 @@ urlpatterns = [
         name='file_upload',
         ),
 
-    url(r'^record/$', views.model_details,
+    url(r'^record/$', views.file_list,
         {
             'title': 'File Manage',
             'sidebar_section': 'Report',
