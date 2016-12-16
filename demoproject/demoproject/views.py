@@ -13,6 +13,7 @@ from django.views.generic.edit import FormView
 from .models import Document
 from .forms import DocumentForm
 from .forms import UploadFileForm
+from .forms import FileListForm
 from .models import modelwithfilefield
 def homepage(_):
     ds = DataPool(
@@ -100,23 +101,29 @@ def model_details(_, title, code, doc, sidebar_items):
                                'sidebar_items': sidebar_items})
 @add_source_code_and_doc
 def report_details(request, title, code, doc, sidebar_items):
-    doc = request.POST.getlist('ticket_id')
+    
+    doc = request.POST.getlist('file_id')
     return render_to_response('report_details.html', {'code': code,
                                'title': title,
                                'doc': doc,
                                'sidebar_items': sidebar_items})
 
 @add_source_code_and_doc
-def file_list(_, title, code, doc, sidebar_items):
-
+def file_list(request, title, code, doc, sidebar_items):
     f_list = os.listdir(os.getcwd()+'\\upload')
+    f_path=os.getcwd()+'\\upload\\'
+    if request.method == 'POST':
+        for f_del in f_list:
+            os.remove(f_path+f_del) 
+            
+    form = FileListForm()
     doc='Please select the trade record Files and click "Show Report" Button'
-    return render_to_response('file_list.html',
+    return render(request,'file_list.html',
                               {'code': code,
                                'title': title,
                                'f_list': f_list,                               
                                'doc': doc,
-                               'sidebar_items': sidebar_items})
+                               'sidebar_items': sidebar_items,'form': form})
 
 
 def upload_file(request):
