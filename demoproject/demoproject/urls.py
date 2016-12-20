@@ -44,7 +44,7 @@ urlpatterns = [
         ),
     url(r'^report-details/$', views.report_details, 
         {
-            'title': 'Report Detail',
+            'title': 'Report Analyzer',
             'sidebar_section': 'Report',
         },  name='query_report'), 
         

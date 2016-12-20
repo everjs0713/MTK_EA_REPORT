@@ -15,6 +15,10 @@ from .forms import DocumentForm
 from .forms import UploadFileForm
 from .forms import FileListForm
 from .models import modelwithfilefield
+
+from django.db.models import Avg, Count
+
+
 def homepage(_):
     ds = DataPool(
         series=[{
@@ -101,12 +105,101 @@ def model_details(_, title, code, doc, sidebar_items):
                                'sidebar_items': sidebar_items})
 @add_source_code_and_doc
 def report_details(request, title, code, doc, sidebar_items):
-    
+
+    # start_code
+    ds = DataPool(
+            series=[{
+                'options': {
+                    'source': MonthlyWeatherByCity.objects.all()
+                },
+                'terms': [
+                    'month',
+                    'houston_temp',
+                    'boston_temp'
+                ]
+            }]
+    )
+
+    cht = Chart(
+            datasource=ds,
+            series_options=[{
+                'options': {
+                    'type': 'line',
+                    'stacking': False
+                },
+                'terms': {
+                    'month': [
+                        'boston_temp',
+                        'houston_temp'
+                    ]
+                }
+            }],
+            chart_options={
+                'title': {
+                    'text': 'Equity with deposit /withdraw'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Time'
+                    }
+                }
+            }
+    )
+
+    ds1 = DataPool(
+        series=[{
+            'options': {
+                'source': MonthlyWeatherByCity.objects.all()
+            },
+            'terms': [
+                'month',
+                'houston_temp',
+                'boston_temp',
+                'san_francisco_temp'
+            ]
+        }]
+    )
+
+    def monthname(month_num):
+        names = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+                 7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+        return names[month_num]
+
+    cht1 = Chart(
+        datasource=ds1,
+        series_options=[{
+            'options': {
+                'type': 'line',
+                'stacking': False
+            },
+            'terms': {
+                'month': [
+                    'boston_temp',
+                    'houston_temp']
+            }
+        }],
+        chart_options={
+            'title': {
+                'text': 'Weather by Month'},
+            'xAxis': {
+                'title': {
+                    'text': 'Month'}},
+            'yAxis': {
+                'title': {
+                    'text': 'Temperature'}},
+            'legend': {
+                'enabled': False},
+            'credits': {
+                'enabled': False}},
+        x_sortf_mapf_mts=(None, monthname, False))
+    # end_code
+    cht=[cht,cht1]
     doc = request.POST.getlist('file_id')
-    return render_to_response('report_details.html', {'code': code,
-                               'title': title,
-                               'doc': doc,
-                               'sidebar_items': sidebar_items})
+    return render_to_response('report_details.html', {
+                                'chart_list': cht,
+                                'title': title,
+                                'doc': doc,
+                                'sidebar_items': sidebar_items})
 
 @add_source_code_and_doc
 def file_list(request, title, code, doc, sidebar_items):
